@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: PersonalizedDailyReportBot
+
+server:
+  port: 9999
