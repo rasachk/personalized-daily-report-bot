@@ -65,7 +65,7 @@ public class DailyReportBot extends TelegramLongPollingBot {
                 execute(message);
             }
         } catch (TelegramApiException telegramApiException) {
-            log.error("Error in onUpdateReceived", telegramApiException));
+            log.error("Error in onUpdateReceived", telegramApiException);
         }
 
     }
