@@ -2,5 +2,24 @@ spring:
   application:
     name: PersonalizedDailyReportBot
 
+#  config:
+#    import: optional:file:./secrets.yml
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elisa
+    username: elisaApp
+    password: elisaApp@1234
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+
+
 server:
   port: 9999
+
+api:
+  key:
+    telegram: token
