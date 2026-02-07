@@ -1,6 +1,6 @@
 package com.rasachk.dailyreportbot.telegram;
 
-import com.rasachk.dailyreportbot.user.service.UserService;
+import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +14,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @RequiredArgsConstructor
 public class BotRegistrationHandler {
 
-    private final UserService userService;
+    private final TelegramUserService telegramUserService;
 
     @Value("${api.key.telegram}")
     private String telegramApiKey;
@@ -25,7 +25,7 @@ public class BotRegistrationHandler {
             log.info("Registering bot...");
             log.info("telegramApiKey: {}", telegramApiKey);
             TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication();
-            botsApplication.registerBot(telegramApiKey, new DailyReportBot(userService));
+            botsApplication.registerBot(telegramApiKey, new DailyReportBot(telegramUserService));
         } catch (TelegramApiException telegramApiException) {
             log.error("Error in registering bot", telegramApiException);
         }

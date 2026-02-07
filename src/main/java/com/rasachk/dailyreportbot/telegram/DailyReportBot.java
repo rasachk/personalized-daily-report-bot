@@ -1,6 +1,6 @@
 package com.rasachk.dailyreportbot.telegram;
 
-import com.rasachk.dailyreportbot.user.service.UserService;
+import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -20,11 +20,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
 
-    private final UserService userService;
+    private final TelegramUserService telegramUserService;
 
     //    @Value("${api.key.telegram}")
 //    private String telegramApiKey;
-    private TelegramClient telegramClient = new OkHttpTelegramClient("8520201262:AAFz5uwdry-eYl3wDnf60tVNrIPrOyn_DNk");
+    private TelegramClient telegramClient = new OkHttpTelegramClient("token");
 
     @Override
     public void consume(Update update) {
@@ -55,7 +55,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
     @NotNull
     private SendMessage handleNewUser(Update update) {
 
-        userService.addNewUser(update.getMessage().getFrom());
+        telegramUserService.addNewUser(update.getMessage().getFrom(),update.getMessage().getChatId());
 
         SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Welcome! You will receive daily reports. Choose an option:");
 
@@ -65,10 +65,9 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
         row2.add(new KeyboardButton("Manage Reports"));
         KeyboardRow row3 = new KeyboardRow();
         row3.add(new KeyboardButton("FAQ"));
-        KeyboardRow row4 = new KeyboardRow();
-        row4.add(new KeyboardButton("Support"));
+        row3.add(new KeyboardButton("Support"));
 
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(List.of(row1, row2, row3, row4));
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(List.of(row1, row2, row3));
         keyboard.setResizeKeyboard(true);
 
         sendMessage.setReplyMarkup(keyboard);
