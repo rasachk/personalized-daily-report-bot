@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.sql.Timestamp;
 
@@ -26,6 +27,10 @@ public class TelegramUser {
     @Column(name = "C_CREATION_DATE")
     @CreationTimestamp
     private Timestamp creationDate;
+
+    @Column(name = "C_LAST_MODIFIED_DATE")
+    @UpdateTimestamp
+    private Timestamp lastModifiedDate;
 
     @Column(name = "C_TELEGRAM_ID")
     private String telegramId;
