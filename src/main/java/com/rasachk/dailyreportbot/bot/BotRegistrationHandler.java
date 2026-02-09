@@ -1,5 +1,6 @@
-package com.rasachk.dailyreportbot.telegram;
+package com.rasachk.dailyreportbot.bot;
 
+import com.rasachk.dailyreportbot.bot.handlers.*;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,12 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 public class BotRegistrationHandler {
 
     private final TelegramUserService telegramUserService;
+    private final StartCommandHandler startCommandHandler;
+    private final MainMenuCommandHandler mainMenuCommandHandler;
+    private final CreateReminderTypeCommandHandler createReminderTypeCommandHandler;
+    private final CreateReminderDetailsCommandHandler createReminderDetailsCommandHandler;
+    private final CreateReminderTimeCommandHandler createReminderTimeCommandHandler;
+    private final ManageRemindersCommandHandler manageRemindersCommandHandler;
 
     @Value("${api.key.telegram}")
     private String telegramApiKey;
@@ -25,7 +32,17 @@ public class BotRegistrationHandler {
             log.info("Registering bot...");
             log.info("telegramApiKey: {}", telegramApiKey);
             TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication();
-            botsApplication.registerBot(telegramApiKey, new DailyReportBot(telegramUserService));
+
+            botsApplication.registerBot(telegramApiKey,
+                    new DailyReportBot(
+                            telegramUserService,
+                            startCommandHandler,
+                            mainMenuCommandHandler,
+                            createReminderTypeCommandHandler,
+                            createReminderDetailsCommandHandler,
+                            createReminderTimeCommandHandler,
+                            manageRemindersCommandHandler));
+
         } catch (TelegramApiException telegramApiException) {
             log.error("Error in registering bot", telegramApiException);
         }
