@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: PersonalizedDailyReportBot
+
+#  config:
+#    import: optional:file:./secrets.yml
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/daily_report_bot_db
+    username: postgres
+    password: admin
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+
+
+server:
+  port: 9999
+
+api:
+  key:
+    telegram: token
