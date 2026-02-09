@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Component
 @Slf4j
@@ -30,8 +32,9 @@ public class BotRegistrationHandler {
     public void init() {
         try {
             log.info("Registering bot...");
-            log.info("telegramApiKey: {}", telegramApiKey);
+
             TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication();
+            TelegramClient telegramClient = new OkHttpTelegramClient(telegramApiKey);
 
             botsApplication.registerBot(telegramApiKey,
                     new DailyReportBot(
@@ -41,7 +44,8 @@ public class BotRegistrationHandler {
                             createReminderTypeCommandHandler,
                             createReminderDetailsCommandHandler,
                             createReminderTimeCommandHandler,
-                            manageRemindersCommandHandler));
+                            manageRemindersCommandHandler,
+                            telegramClient));
 
         } catch (TelegramApiException telegramApiException) {
             log.error("Error in registering bot", telegramApiException);

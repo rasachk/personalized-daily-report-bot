@@ -5,7 +5,6 @@ import com.rasachk.dailyreportbot.user.model.SessionState;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -23,10 +22,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
     private final CreateReminderDetailsCommandHandler createReminderDetailsCommandHandler;
     private final CreateReminderTimeCommandHandler createReminderTimeCommandHandler;
     private final ManageRemindersCommandHandler manageRemindersCommandHandler;
-
-    //    @Value("${api.key.telegram}")
-//    private String telegramApiKey;
-    private TelegramClient telegramClient = new OkHttpTelegramClient("token");
+    private final TelegramClient telegramClient;
 
     @Override
     public void consume(Update update) {
