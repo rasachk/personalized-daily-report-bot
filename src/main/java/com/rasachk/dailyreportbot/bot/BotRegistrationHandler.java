@@ -1,0 +1,54 @@
+package com.rasachk.dailyreportbot.bot;
+
+import com.rasachk.dailyreportbot.bot.handlers.*;
+import com.rasachk.dailyreportbot.user.service.TelegramUserService;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
+
+@Component
+@Slf4j
+@RequiredArgsConstructor
+public class BotRegistrationHandler {
+
+    private final TelegramUserService telegramUserService;
+    private final StartCommandHandler startCommandHandler;
+    private final MainMenuCommandHandler mainMenuCommandHandler;
+    private final CreateReminderTypeCommandHandler createReminderTypeCommandHandler;
+    private final CreateReminderDetailsCommandHandler createReminderDetailsCommandHandler;
+    private final CreateReminderTimeCommandHandler createReminderTimeCommandHandler;
+    private final ManageRemindersCommandHandler manageRemindersCommandHandler;
+
+    @Value("${api.key.telegram}")
+    private String telegramApiKey;
+
+    @PostConstruct
+    public void init() {
+        try {
+            log.info("Registering bot...");
+
+            TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication();
+            TelegramClient telegramClient = new OkHttpTelegramClient(telegramApiKey);
+
+            botsApplication.registerBot(telegramApiKey,
+                    new DailyReportBot(
+                            telegramUserService,
+                            startCommandHandler,
+                            mainMenuCommandHandler,
+                            createReminderTypeCommandHandler,
+                            createReminderDetailsCommandHandler,
+                            createReminderTimeCommandHandler,
+                            manageRemindersCommandHandler,
+                            telegramClient));
+
+        } catch (TelegramApiException telegramApiException) {
+            log.error("Error in registering bot", telegramApiException);
+        }
+    }
+}

@@ -6,9 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 @Entity
 @Data
@@ -35,14 +38,15 @@ public class UserSession {
     @UpdateTimestamp
     private Timestamp lastModifiedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "C_TELEGRAM_USER")
+    private TelegramUser telegramUser;
+
     @Column(name = "C_SESSION_STATE")
     @Enumerated(EnumType.STRING)
     private SessionState sessionState;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "C_USER_ID")
-    private TelegramUser userId;
-
-    @Column(name = "C_PARAMETERS", columnDefinition = "CLOB")
-    private String parameters;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "C_PARAMETERS")
+    private Map<String, String> parameters;
 }
