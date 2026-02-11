@@ -8,5 +8,7 @@ public class Constants {
     public static final String COMMAND_NOT_RECOGNIZED_ERROR = "Command not recognized!";
     public static final String FAQ_MESSAGE = "No questions yet!";
     public static final String SUPPORT_MESSAGE = "If you have any problems, you can contact the boy administrator at @rasachk";
+    public static final String TYPE_KEY = "type";
+    public static final String LOCATION_KEY = "location";
 
 }

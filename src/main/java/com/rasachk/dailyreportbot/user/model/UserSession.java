@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 @Entity
 @Data
@@ -47,5 +48,5 @@ public class UserSession {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "C_PARAMETERS")
-    private String parameters;
+    private Map<String, String> parameters;
 }

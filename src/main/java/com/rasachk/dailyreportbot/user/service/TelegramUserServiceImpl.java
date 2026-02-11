@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.User;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -77,7 +78,7 @@ public class TelegramUserServiceImpl implements TelegramUserService {
     }
 
     @Override
-    public void updateUserSessionState(User user, SessionState sessionState, String parameters) {
+    public void updateUserSessionState(User user, SessionState sessionState, Map<String, String> parameters) {
         TelegramUser telegramUser = telegramUserRepository.findFirstByTelegramId(String.valueOf(user.getId()))
                 .orElseThrow(() -> new RuntimeException("TelegramUser Not Found Id: " + user.getId()));
 
@@ -88,5 +89,16 @@ public class TelegramUserServiceImpl implements TelegramUserService {
         userSession.setParameters(parameters);
 
         userSessionRepository.save(userSession);
+    }
+
+    @Override
+    public Map<String, String> getUserSessionParameters(User user) {
+        TelegramUser telegramUser = telegramUserRepository.findFirstByTelegramId(String.valueOf(user.getId()))
+                .orElseThrow(() -> new RuntimeException("TelegramUser Not Found Id: " + user.getId()));
+
+        UserSession userSession = userSessionRepository.findFirstByTelegramUser_Id(telegramUser.getId())
+                .orElseThrow(() -> new RuntimeException("UserSession Not Found User Id: " + user.getId()));
+
+        return userSession.getParameters();
     }
 }

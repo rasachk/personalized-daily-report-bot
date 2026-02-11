@@ -14,4 +14,13 @@ public enum ReminderType {
     ReminderType(String title) {
         this.title = title;
     }
+
+    public static ReminderType fromTitle(String title) {
+        for (ReminderType type : values()) {
+            if (type.title.equalsIgnoreCase(title)) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException("Unknown reminder type: " + title);
+    }
 }
