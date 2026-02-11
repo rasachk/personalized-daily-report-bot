@@ -12,6 +12,7 @@ import org.hibernate.type.SqlTypes;
 
 import java.sql.Timestamp;
 import java.time.LocalTime;
+import java.util.Map;
 
 @Entity
 @Data
@@ -44,7 +45,7 @@ public class Reminder {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "C_PARAMETERS")
-    private String parameters;
+    private Map<String, String> parameters;
 
     @Column(name = "C_REMINDER_TIME")
     private LocalTime reminderTime;
