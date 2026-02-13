@@ -1,0 +1,12 @@
+package com.rasachk.dailyreportbot.weather.model.dto;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Data;
+
+import java.util.List;
+
+@Data
+public class ForecastDto {
+    @JsonProperty("forecastday")
+    private List<ForecastDayDto> forecastDay;
+}

@@ -3,29 +3,41 @@ package com.rasachk.dailyreportbot.reminder.service;
 import com.rasachk.dailyreportbot.reminder.model.Reminder;
 import com.rasachk.dailyreportbot.reminder.model.ReminderType;
 import com.rasachk.dailyreportbot.reminder.repository.ReminderRepository;
+import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ReminderServiceImpl implements ReminderService {
 
     private final ReminderRepository reminderRepository;
+    private final TelegramUserService telegramUserService;
 
     @Override
-    public void createNewReminder(ReminderType reminderType, LocalTime reminderTime, Map<String, String> parameters) {
+    public void createNewReminder(ReminderType reminderType, LocalTime reminderTime, Map<String, String> parameters, User user) {
 
         Reminder reminder = Reminder.builder()
                 .reminderType(reminderType)
                 .reminderTime(reminderTime)
                 .parameters(parameters)
+                .telegramUser(telegramUserService.findUserByTelegramId(String.valueOf(user.getId())))
                 .isActive(true)
                 .isDeleted(false)
                 .build();
 
         reminderRepository.save(reminder);
+    }
+
+    @Override
+    public List<Reminder> findScheduledReminders(LocalTime localTime) {
+        return reminderRepository.findByReminderTimeAndIsActiveTrueAndIsDeletedFalse(localTime);
     }
 }
