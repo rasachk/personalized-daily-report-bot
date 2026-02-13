@@ -4,7 +4,7 @@ import com.rasachk.dailyreportbot.config.Constants;
 import com.rasachk.dailyreportbot.reminder.model.ReminderType;
 import com.rasachk.dailyreportbot.user.model.SessionState;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
-import com.rasachk.dailyreportbot.weather.service.WeatherForcastService;
+import com.rasachk.dailyreportbot.weather.service.WeatherForecastService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,7 +23,7 @@ import java.util.Map;
 public class CreateReminderTypeCommandHandler implements CommandHandler {
 
     private final TelegramUserService telegramUserService;
-    private final WeatherForcastService weatherForcastService;
+    private final WeatherForecastService weatherForecastService;
 
     @Override
     public SendMessage handle(Update update) {
@@ -32,7 +32,7 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
         SendMessage sendMessage;
         switch (reminderType) {
-            case WEATHER_FORCAST -> sendMessage = handleWeatherForcastTypeButton(update);
+            case WEATHER_FORECAST -> sendMessage = handleWeatherForcastTypeButton(update);
             case CURRENCY -> sendMessage = handleCurrencyTypeButton(update);
             case PERSONAL -> sendMessage = handlePersonalTypeButton(update);
             case SPORTS -> sendMessage = handleSportsTypeButton(update);
@@ -47,13 +47,13 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
     private SendMessage handleWeatherForcastTypeButton(Update update) {
 
         Map<String, String> parameters = new HashMap<>();
-        parameters.put(Constants.TYPE_KEY, ReminderType.WEATHER_FORCAST.getTitle());
+        parameters.put(Constants.TYPE_KEY, ReminderType.WEATHER_FORECAST.getTitle());
 
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, parameters);
 
         SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose your location: ");
 
-        List<String> cityNames = weatherForcastService.getAvailableCityNames();
+        List<String> cityNames = weatherForecastService.getAvailableCityNames();
 
         List<KeyboardRow> rows = new ArrayList<>();
 

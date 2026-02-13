@@ -34,7 +34,7 @@ public class CreateReminderTimeCommandHandler implements CommandHandler {
 
         ReminderType reminderType = ReminderType.fromTitle(sessionParameters.get(Constants.TYPE_KEY));
 
-        reminderService.createNewReminder(reminderType, reminderTime, sessionParameters);
+        reminderService.createNewReminder(reminderType, reminderTime, sessionParameters, update.getMessage().getFrom());
 
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.MAIN_MENU, null);
 

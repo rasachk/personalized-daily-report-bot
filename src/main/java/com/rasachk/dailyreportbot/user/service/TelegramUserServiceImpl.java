@@ -101,4 +101,10 @@ public class TelegramUserServiceImpl implements TelegramUserService {
 
         return userSession.getParameters();
     }
+
+    @Override
+    public TelegramUser findUserByTelegramId(String telegramId) {
+        return telegramUserRepository.findFirstByTelegramId(telegramId)
+                .orElseThrow(() -> new RuntimeException("TelegramUser Not Found Id: " + telegramId));
+    }
 }

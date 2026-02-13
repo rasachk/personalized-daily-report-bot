@@ -1,18 +1,29 @@
 package com.rasachk.dailyreportbot.bot;
 
 import com.rasachk.dailyreportbot.bot.handlers.*;
+import com.rasachk.dailyreportbot.reminder.model.Reminder;
+import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.model.SessionState;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
+import com.rasachk.dailyreportbot.weather.service.WeatherForecastService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
+@Service
 public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
 
     private final TelegramUserService telegramUserService;
@@ -22,7 +33,9 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
     private final CreateReminderDetailsCommandHandler createReminderDetailsCommandHandler;
     private final CreateReminderTimeCommandHandler createReminderTimeCommandHandler;
     private final ManageRemindersCommandHandler manageRemindersCommandHandler;
-    private final TelegramClient telegramClient;
+    private final ReminderService reminderService;
+    private final WeatherForecastService weatherForecastService;
+    private final TelegramClient telegramClient = new OkHttpTelegramClient("token");
 
     @Override
     public void consume(Update update) {
@@ -55,5 +68,46 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
         }
 
     }
+
+    public void executeMessageToUser(SendMessage sendMessage) {
+        try {
+            log.info("Sending message to user: {}", sendMessage);
+            telegramClient.execute(sendMessage);
+        } catch (TelegramApiException telegramApiException) {
+            log.error("Error in onUpdateReceived", telegramApiException);
+        }
+    }
+
+
+    @Scheduled(cron = "0 */30 * * * *")
+    public void processReminders() {
+
+        LocalTime now = LocalTime.now()
+                .withSecond(0)
+                .withNano(0);
+
+        log.info("Checking reminders for {}", now);
+
+        List<Reminder> reminderList = reminderService.findScheduledReminders(now);
+
+        log.info("ReminderList size: {}", reminderList.size());
+
+        List<SendMessage> sendMessageList = new ArrayList<>();
+        for (Reminder reminder : reminderList) {
+            String message = switch (reminder.getReminderType()) {
+                case WEATHER_FORECAST -> weatherForecastService.getWeatherForcastMessage(reminder.getParameters());
+                case CURRENCY -> null;
+                case PERSONAL -> null;
+                case SPORTS -> null;
+            };
+            sendMessageList.add(new SendMessage(reminder.getTelegramUser().getChatId(), message));
+        }
+
+        for (SendMessage sendMessage : sendMessageList) {
+            executeMessageToUser(sendMessage);
+        }
+
+    }
+
 
 }

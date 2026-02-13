@@ -56,7 +56,7 @@ public class MainMenuCommandHandler implements CommandHandler {
         SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose the reminder type you want to create:");
 
         KeyboardRow row1 = new KeyboardRow();
-        row1.add(new KeyboardButton(ReminderType.WEATHER_FORCAST.getTitle()));
+        row1.add(new KeyboardButton(ReminderType.WEATHER_FORECAST.getTitle()));
         row1.add(new KeyboardButton(ReminderType.CURRENCY.getTitle()));
         KeyboardRow row2 = new KeyboardRow();
         row2.add(new KeyboardButton(ReminderType.PERSONAL.getTitle()));

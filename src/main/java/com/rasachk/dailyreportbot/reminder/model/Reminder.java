@@ -1,5 +1,6 @@
 package com.rasachk.dailyreportbot.reminder.model;
 
+import com.rasachk.dailyreportbot.user.model.TelegramUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,5 +56,9 @@ public class Reminder {
 
     @Column(name = "C_IS_DELETED")
     private Boolean isDeleted;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "C_TELEGRAM_USER")
+    private TelegramUser telegramUser;
 
 }

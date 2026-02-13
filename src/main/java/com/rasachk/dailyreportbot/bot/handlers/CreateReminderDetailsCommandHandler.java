@@ -30,7 +30,7 @@ public class CreateReminderDetailsCommandHandler implements CommandHandler {
 
         SendMessage sendMessage;
         switch (reminderType) {
-            case WEATHER_FORCAST -> sendMessage = handleWeatherForcastDetailButton(update, parameters);
+            case WEATHER_FORECAST -> sendMessage = handleWeatherForcastDetailButton(update, parameters);
 //            case CURRENCY -> sendMessage = handleCurrencyTypeButton(update);
 //            case PERSONAL -> sendMessage = handlePersonalTypeButton(update);
 //            case SPORTS -> sendMessage = handleSportsTypeButton(update);

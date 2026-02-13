@@ -1,16 +1,16 @@
 package com.rasachk.dailyreportbot.bot;
 
 import com.rasachk.dailyreportbot.bot.handlers.*;
+import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
+import com.rasachk.dailyreportbot.weather.service.WeatherForecastService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Component
 @Slf4j
@@ -24,6 +24,8 @@ public class BotRegistrationHandler {
     private final CreateReminderDetailsCommandHandler createReminderDetailsCommandHandler;
     private final CreateReminderTimeCommandHandler createReminderTimeCommandHandler;
     private final ManageRemindersCommandHandler manageRemindersCommandHandler;
+    private final ReminderService reminderService;
+    private final WeatherForecastService weatherForecastService;
 
     @Value("${api.key.telegram}")
     private String telegramApiKey;
@@ -34,7 +36,6 @@ public class BotRegistrationHandler {
             log.info("Registering bot...");
 
             TelegramBotsLongPollingApplication botsApplication = new TelegramBotsLongPollingApplication();
-            TelegramClient telegramClient = new OkHttpTelegramClient(telegramApiKey);
 
             botsApplication.registerBot(telegramApiKey,
                     new DailyReportBot(
@@ -45,7 +46,8 @@ public class BotRegistrationHandler {
                             createReminderDetailsCommandHandler,
                             createReminderTimeCommandHandler,
                             manageRemindersCommandHandler,
-                            telegramClient));
+                            reminderService,
+                            weatherForecastService));
 
         } catch (TelegramApiException telegramApiException) {
             log.error("Error in registering bot", telegramApiException);
