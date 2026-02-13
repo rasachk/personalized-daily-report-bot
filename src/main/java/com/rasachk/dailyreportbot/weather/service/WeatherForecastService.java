@@ -5,7 +5,7 @@ import com.rasachk.dailyreportbot.weather.model.dto.ForecastResponse;
 import java.util.List;
 import java.util.Map;
 
-public interface WeatherForcastService {
+public interface WeatherForecastService {
 
     List<String> getAvailableCityNames();
 

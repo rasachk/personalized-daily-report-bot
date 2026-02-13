@@ -21,7 +21,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 @Slf4j
-public class WeatherForcastServiceImpl implements WeatherForcastService {
+public class WeatherForecastServiceImpl implements WeatherForecastService {
 
     private final WeatherCityRepository weatherCityRepository;
     private final WeatherAPIClient weatherAPIClient;
@@ -38,7 +38,7 @@ public class WeatherForcastServiceImpl implements WeatherForcastService {
     @Override
     public String getWeatherForcastMessage(Map<String, String> parameters) {
         String location = parameters.get(Constants.LOCATION_KEY);
-        log.info("Getting weather forcast for location: {}", location);
+        log.info("Getting weather forecast for location: {}", location);
         ForecastResponse forecastResponse = weatherAPIClient.getForecast(location, 3);
         return buildForecastMessage(forecastResponse, location);
     }

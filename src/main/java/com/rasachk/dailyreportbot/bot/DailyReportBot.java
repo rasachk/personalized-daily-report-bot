@@ -5,7 +5,7 @@ import com.rasachk.dailyreportbot.reminder.model.Reminder;
 import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.model.SessionState;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
-import com.rasachk.dailyreportbot.weather.service.WeatherForcastService;
+import com.rasachk.dailyreportbot.weather.service.WeatherForecastService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,7 +34,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
     private final CreateReminderTimeCommandHandler createReminderTimeCommandHandler;
     private final ManageRemindersCommandHandler manageRemindersCommandHandler;
     private final ReminderService reminderService;
-    private final WeatherForcastService weatherForcastService;
+    private final WeatherForecastService weatherForecastService;
     private final TelegramClient telegramClient = new OkHttpTelegramClient("token");
 
     @Override
@@ -95,7 +95,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
         List<SendMessage> sendMessageList = new ArrayList<>();
         for (Reminder reminder : reminderList) {
             String message = switch (reminder.getReminderType()) {
-                case WEATHER_FORCAST -> weatherForcastService.getWeatherForcastMessage(reminder.getParameters());
+                case WEATHER_FORECAST -> weatherForecastService.getWeatherForcastMessage(reminder.getParameters());
                 case CURRENCY -> null;
                 case PERSONAL -> null;
                 case SPORTS -> null;

@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum ReminderType {
-    WEATHER_FORCAST("Weather Forcast"),
+    WEATHER_FORECAST("Weather Forecast"),
     CURRENCY("Currency"),
     PERSONAL("Personal"),
     SPORTS("Sports");
