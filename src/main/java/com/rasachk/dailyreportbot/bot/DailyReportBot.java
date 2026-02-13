@@ -1,6 +1,7 @@
 package com.rasachk.dailyreportbot.bot;
 
 import com.rasachk.dailyreportbot.bot.handlers.*;
+import com.rasachk.dailyreportbot.config.Constants;
 import com.rasachk.dailyreportbot.reminder.model.Reminder;
 import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.model.SessionState;
@@ -97,9 +98,11 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
             String message = switch (reminder.getReminderType()) {
                 case WEATHER_FORECAST -> weatherForecastService.getWeatherForcastMessage(reminder.getParameters());
                 case CURRENCY -> null;
-                case PERSONAL -> null;
+                case PERSONAL ->
+                        "Your personal daily reminder:\n" + reminder.getParameters().get(Constants.PERSONAL_MESSAGE_KEY);
                 case SPORTS -> null;
             };
+
             sendMessageList.add(new SendMessage(reminder.getTelegramUser().getChatId(), message));
         }
 

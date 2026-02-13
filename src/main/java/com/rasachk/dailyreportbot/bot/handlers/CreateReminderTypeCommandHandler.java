@@ -83,8 +83,13 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
 
     private SendMessage handlePersonalTypeButton(Update update) {
-        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, null);
-        return null;
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(Constants.TYPE_KEY, ReminderType.PERSONAL.getTitle());
+        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, parameters);
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Enter your personal daily reminder message: ");
+        //TODO MAKE THE PREVIOUS REPLY KEYBOARD GO AWAY
+        sendMessage.setReplyMarkup(null);
+        return sendMessage;
     }
 
 

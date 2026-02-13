@@ -32,13 +32,19 @@ public class CreateReminderDetailsCommandHandler implements CommandHandler {
         switch (reminderType) {
             case WEATHER_FORECAST -> sendMessage = handleWeatherForcastDetailButton(update, parameters);
 //            case CURRENCY -> sendMessage = handleCurrencyTypeButton(update);
-//            case PERSONAL -> sendMessage = handlePersonalTypeButton(update);
+            case PERSONAL -> sendMessage = handlePersonalDetailButton(update, parameters);
 //            case SPORTS -> sendMessage = handleSportsTypeButton(update);
             default ->
                     sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), Constants.COMMAND_NOT_RECOGNIZED_ERROR);
         }
 
         return sendMessage;
+    }
+
+    private SendMessage handlePersonalDetailButton(Update update, Map<String, String> parameters) {
+        parameters.put(Constants.PERSONAL_MESSAGE_KEY, update.getMessage().getText());
+        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_TIME, parameters);
+        return generateReminderTimeSendMessage(update.getMessage().getChatId());
     }
 
 
