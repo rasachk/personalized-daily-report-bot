@@ -89,8 +89,8 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
 
     private SendMessage handleSportsTypeButton(Update update) {
-        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, null);
-        return null;
+//        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, null);
+        return new SendMessage(String.valueOf(update.getMessage().getChatId()), Constants.COMING_SOON_MESSAGE);
     }
 
     private ReplyKeyboardMarkup generateReplyKeyboardMarkup(List<String> options) {
