@@ -2,6 +2,7 @@ package com.rasachk.dailyreportbot.bot;
 
 import com.rasachk.dailyreportbot.bot.handlers.*;
 import com.rasachk.dailyreportbot.config.Constants;
+import com.rasachk.dailyreportbot.currency.service.CurrencyService;
 import com.rasachk.dailyreportbot.reminder.model.Reminder;
 import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.model.SessionState;
@@ -36,6 +37,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
     private final ManageRemindersCommandHandler manageRemindersCommandHandler;
     private final ReminderService reminderService;
     private final WeatherForecastService weatherForecastService;
+    private final CurrencyService currencyService;
     private final TelegramClient telegramClient = new OkHttpTelegramClient("token");
 
     @Override
@@ -97,7 +99,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
         for (Reminder reminder : reminderList) {
             String message = switch (reminder.getReminderType()) {
                 case WEATHER_FORECAST -> weatherForecastService.getWeatherForcastMessage(reminder.getParameters());
-                case CURRENCY -> null;
+                case CURRENCY -> currencyService.getCurrencyRateMessage(reminder.getParameters());
                 case PERSONAL ->
                         "Your personal daily reminder:\n" + reminder.getParameters().get(Constants.PERSONAL_MESSAGE_KEY);
                 case SPORTS -> null;

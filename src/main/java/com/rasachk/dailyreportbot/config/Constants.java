@@ -11,5 +11,6 @@ public class Constants {
     public static final String TYPE_KEY = "type";
     public static final String LOCATION_KEY = "location";
     public static final String PERSONAL_MESSAGE_KEY = "message";
+    public static final String CURRENCY_KEY = "currency";
 
 }

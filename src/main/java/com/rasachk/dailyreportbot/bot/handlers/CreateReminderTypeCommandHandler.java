@@ -1,6 +1,7 @@
 package com.rasachk.dailyreportbot.bot.handlers;
 
 import com.rasachk.dailyreportbot.config.Constants;
+import com.rasachk.dailyreportbot.currency.service.CurrencyService;
 import com.rasachk.dailyreportbot.reminder.model.ReminderType;
 import com.rasachk.dailyreportbot.user.model.SessionState;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
@@ -24,6 +25,7 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
     private final TelegramUserService telegramUserService;
     private final WeatherForecastService weatherForecastService;
+    private final CurrencyService currencyService;
 
     @Override
     public SendMessage handle(Update update) {
@@ -55,30 +57,23 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
         List<String> cityNames = weatherForecastService.getAvailableCityNames();
 
-        List<KeyboardRow> rows = new ArrayList<>();
-
-        int rowSize = 3;
-        for (int i = 0; i < cityNames.size(); i += rowSize) {
-            KeyboardRow row = new KeyboardRow();
-
-            for (int j = i; j < i + rowSize && j < cityNames.size(); j++) {
-                row.add(new KeyboardButton(cityNames.get(j)));
-            }
-
-            rows.add(row);
-        }
-
-        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(rows);
-        keyboard.setResizeKeyboard(true);
-
-        sendMessage.setReplyMarkup(keyboard);
+        sendMessage.setReplyMarkup(generateReplyKeyboardMarkup(cityNames));
         return sendMessage;
     }
 
 
     private SendMessage handleCurrencyTypeButton(Update update) {
-        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, null);
-        return null;
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put(Constants.TYPE_KEY, ReminderType.CURRENCY.getTitle());
+
+        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, parameters);
+
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose your currency: ");
+
+        List<String> cityNames = currencyService.getAvailableCurrencyNames();
+
+        sendMessage.setReplyMarkup(generateReplyKeyboardMarkup(cityNames));
+        return sendMessage;
     }
 
 
@@ -96,5 +91,25 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
     private SendMessage handleSportsTypeButton(Update update) {
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, null);
         return null;
+    }
+
+    private ReplyKeyboardMarkup generateReplyKeyboardMarkup(List<String> options) {
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        int rowSize = 3;
+        for (int i = 0; i < options.size(); i += rowSize) {
+            KeyboardRow row = new KeyboardRow();
+
+            for (int j = i; j < i + rowSize && j < options.size(); j++) {
+                row.add(new KeyboardButton(options.get(j)));
+            }
+
+            rows.add(row);
+        }
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(rows);
+        keyboard.setResizeKeyboard(true);
+
+        return keyboard;
     }
 }

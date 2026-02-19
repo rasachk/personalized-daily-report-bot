@@ -1,6 +1,7 @@
 package com.rasachk.dailyreportbot.bot;
 
 import com.rasachk.dailyreportbot.bot.handlers.*;
+import com.rasachk.dailyreportbot.currency.service.CurrencyService;
 import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import com.rasachk.dailyreportbot.weather.service.WeatherForecastService;
@@ -26,6 +27,7 @@ public class BotRegistrationHandler {
     private final ManageRemindersCommandHandler manageRemindersCommandHandler;
     private final ReminderService reminderService;
     private final WeatherForecastService weatherForecastService;
+    private final CurrencyService currencyService;
 
     @Value("${api.key.telegram}")
     private String telegramApiKey;
@@ -47,7 +49,8 @@ public class BotRegistrationHandler {
                             createReminderTimeCommandHandler,
                             manageRemindersCommandHandler,
                             reminderService,
-                            weatherForecastService));
+                            weatherForecastService,
+                            currencyService));
 
         } catch (TelegramApiException telegramApiException) {
             log.error("Error in registering bot", telegramApiException);
