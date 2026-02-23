@@ -3,6 +3,7 @@ package com.rasachk.dailyreportbot.reminder.service;
 import com.rasachk.dailyreportbot.reminder.model.Reminder;
 import com.rasachk.dailyreportbot.reminder.model.ReminderType;
 import com.rasachk.dailyreportbot.reminder.repository.ReminderRepository;
+import com.rasachk.dailyreportbot.user.model.TelegramUser;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,5 +40,31 @@ public class ReminderServiceImpl implements ReminderService {
     @Override
     public List<Reminder> findScheduledReminders(LocalTime localTime) {
         return reminderRepository.findByReminderTimeAndIsActiveTrueAndIsDeletedFalse(localTime);
+    }
+
+    @Override
+    public List<Reminder> getUserReminderList(User user) {
+        TelegramUser telegramUser = telegramUserService.findUserByTelegramId(String.valueOf(user.getId()));
+        return reminderRepository.findByTelegramUser_IdAndIsDeletedFalse(telegramUser.getId());
+    }
+
+    @Override
+    public void changeReminderActivationStatus(Long reminderId, Boolean newStatus) {
+        Reminder reminder = reminderRepository.findFirstById(reminderId)
+                .orElseThrow(() -> new RuntimeException("Reminder Not Found Id: " + reminderId));
+
+        reminder.setIsActive(newStatus);
+
+        reminderRepository.save(reminder);
+    }
+
+    @Override
+    public void deleteReminder(Long reminderId) {
+        Reminder reminder = reminderRepository.findFirstById(reminderId)
+                .orElseThrow(() -> new RuntimeException("Reminder Not Found Id: " + reminderId));
+
+        reminder.setIsDeleted(true);
+
+        reminderRepository.save(reminder);
     }
 }

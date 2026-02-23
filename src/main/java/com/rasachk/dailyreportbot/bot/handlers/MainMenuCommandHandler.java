@@ -1,11 +1,12 @@
 package com.rasachk.dailyreportbot.bot.handlers;
 
 import com.rasachk.dailyreportbot.config.Constants;
+import com.rasachk.dailyreportbot.reminder.model.Reminder;
 import com.rasachk.dailyreportbot.reminder.model.ReminderType;
+import com.rasachk.dailyreportbot.reminder.service.ReminderService;
 import com.rasachk.dailyreportbot.user.model.SessionState;
 import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMar
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -20,6 +22,7 @@ import java.util.List;
 public class MainMenuCommandHandler implements CommandHandler {
 
     private final TelegramUserService telegramUserService;
+    private final ReminderService reminderService;
 
 
     @Override
@@ -41,11 +44,68 @@ public class MainMenuCommandHandler implements CommandHandler {
     }
 
 
-    @Nullable
     private SendMessage handleManageRemindersButton(Update update) {
-        SendMessage sendMessage = null;
-        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.MANAGE_REMINDERS, null);
+        telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.MANAGE_REMINDERS_MENU, null);
+        List<Reminder> reminderList = reminderService.getUserReminderList(update.getMessage().getFrom());
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), generateManageRemindersMessage(reminderList));
+        sendMessage.setReplyMarkup(generateManageRemindersKeyboard(reminderList));
         return sendMessage;
+    }
+
+    private ReplyKeyboardMarkup generateManageRemindersKeyboard(List<Reminder> remindersList) {
+        List<KeyboardRow> rows = new ArrayList<>();
+
+        int index = 1;
+
+        for (Reminder reminder : remindersList) {
+            KeyboardRow row = new KeyboardRow();
+            row.add(new KeyboardButton(index + ". " + (reminder.getIsActive() ? Constants.DEACTIVATE_BUTTON : Constants.ACTIVATE_BUTTON)));
+            row.add(new KeyboardButton(index + ". " + Constants.DELETE_BUTTON));
+            index++;
+            rows.add(row);
+        }
+
+        rows.add(new KeyboardRow(new KeyboardButton(Constants.BACK_BUTTON)));
+
+        ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(rows);
+        keyboard.setResizeKeyboard(true);
+
+        return keyboard;
+
+    }
+
+
+    public String generateManageRemindersMessage(List<Reminder> reminders) {
+        if (reminders == null || reminders.isEmpty()) {
+            return "📭 You have no reminders set.";
+        }
+
+        StringBuilder message = new StringBuilder();
+        message.append("⏰ *Your Reminders*\n\n");
+
+        int index = 1;
+
+        for (Reminder reminder : reminders) {
+            message.append(index++).append(". ");
+
+            message.append(reminder.getReminderType().getTitle()).append("\n");
+            message.append("Time: ").append(reminder.getReminderTime()).append("\n");
+
+            if (reminder.getParameters() != null && !reminder.getParameters().isEmpty()) {
+                message.append("Details:").append("\n");
+                reminder.getParameters().forEach((key, value) ->
+                        message.append(key).append(": ").append(value).append("\n")
+                );
+            }
+
+            message.append("Status: ").append(Boolean.TRUE.equals(reminder.getIsActive()) ? "Active ✅" : "Inactive ❌").append("\n");
+
+            message.append("\n");
+        }
+
+        message.append("\n").append("Choose the reminder you want to modify:");
+
+        return message.toString();
     }
 
 
@@ -64,6 +124,7 @@ public class MainMenuCommandHandler implements CommandHandler {
 
         ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup(List.of(row1, row2));
         keyboard.setResizeKeyboard(true);
+        keyboard.setOneTimeKeyboard(true);
 
         sendMessage.setReplyMarkup(keyboard);
         return sendMessage;

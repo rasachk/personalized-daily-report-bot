@@ -12,4 +12,10 @@ public interface ReminderService {
     void createNewReminder(ReminderType reminderType, LocalTime reminderTime, Map<String, String> parameters, User user);
 
     List<Reminder> findScheduledReminders(LocalTime localTime);
+
+    List<Reminder> getUserReminderList(User user);
+
+    void changeReminderActivationStatus(Long reminderId, Boolean newStatus);
+
+    void deleteReminder(Long reminderId);
 }

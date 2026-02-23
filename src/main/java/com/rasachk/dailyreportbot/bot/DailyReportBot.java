@@ -58,7 +58,7 @@ public class DailyReportBot implements LongPollingSingleThreadUpdateConsumer {
                         case CREATE_REMINDER_TYPE -> createReminderTypeCommandHandler.handle(update);
                         case CREATE_REMINDER_DETAILS -> createReminderDetailsCommandHandler.handle(update);
                         case CREATE_REMINDER_TIME -> createReminderTimeCommandHandler.handle(update);
-                        case MANAGE_REMINDERS -> manageRemindersCommandHandler.handle(update);
+                        case MANAGE_REMINDERS_MENU -> manageRemindersCommandHandler.handle(update);
                     };
                 }
 
