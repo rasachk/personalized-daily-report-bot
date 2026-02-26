@@ -6,7 +6,7 @@ import com.rasachk.dailyreportbot.user.model.UserSession;
 import com.rasachk.dailyreportbot.user.repository.TelegramUserRepository;
 import com.rasachk.dailyreportbot.user.repository.UserSessionRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.User;
 
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Service
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 public class TelegramUserServiceImpl implements TelegramUserService {
 

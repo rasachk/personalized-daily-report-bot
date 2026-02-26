@@ -7,14 +7,14 @@ import com.rasachk.dailyreportbot.user.service.TelegramUserService;
 import com.rasachk.dailyreportbot.weather.service.WeatherForecastService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
-@Slf4j
+@Log4j2
 @RequiredArgsConstructor
 public class BotRegistrationHandler {
 
