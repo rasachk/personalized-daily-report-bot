@@ -53,7 +53,7 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, parameters);
 
-        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose your location: ");
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose your location:");
 
         List<String> cityNames = weatherForecastService.getAvailableCityNames();
 
@@ -68,7 +68,7 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
 
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, parameters);
 
-        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose your currency: ");
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose your currency:");
 
         List<String> cityNames = currencyService.getAvailableCurrencyNames();
 
@@ -81,7 +81,7 @@ public class CreateReminderTypeCommandHandler implements CommandHandler {
         Map<String, String> parameters = new HashMap<>();
         parameters.put(Constants.TYPE_KEY, ReminderType.PERSONAL.getTitle());
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.CREATE_REMINDER_DETAILS, parameters);
-        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Enter your personal daily reminder message: ");
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Enter your personal daily reminder message:");
         //TODO MAKE THE PREVIOUS REPLY KEYBOARD GO AWAY
         return sendMessage;
     }

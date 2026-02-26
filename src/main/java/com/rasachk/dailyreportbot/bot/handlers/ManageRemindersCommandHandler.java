@@ -47,7 +47,7 @@ public class ManageRemindersCommandHandler implements CommandHandler {
                 }
 
                 telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.MAIN_MENU, null);
-                sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Reminder updated successfully!\nChoose an option: ");
+                sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Reminder updated successfully!\nChoose an option:");
                 sendMessage.setReplyMarkup(mainMenuKeyboardFactory.generateMainMenuKeyboard());
 
             } else throw new RuntimeException(Constants.COMMAND_NOT_RECOGNIZED_ERROR);
@@ -60,7 +60,7 @@ public class ManageRemindersCommandHandler implements CommandHandler {
     private SendMessage handleBackButton(Update update) {
         telegramUserService.updateUserSessionState(update.getMessage().getFrom(), SessionState.MAIN_MENU, null);
 
-        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose an option: ");
+        SendMessage sendMessage = new SendMessage(String.valueOf(update.getMessage().getChatId()), "Choose an option:");
         sendMessage.setReplyMarkup(mainMenuKeyboardFactory.generateMainMenuKeyboard());
 
         return sendMessage;
