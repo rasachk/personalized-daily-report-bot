@@ -28,8 +28,7 @@ public class CreateReminderTimeCommandHandler implements CommandHandler {
 
         //TODO VALIDATE TIME TEXT
         LocalTime reminderTime = LocalTime.parse(update.getMessage().getText());
-
-        ReminderType reminderType = ReminderType.fromTitle(sessionParameters.get(Constants.TYPE_KEY));
+        ReminderType reminderType = ReminderType.fromTitle(sessionParameters.remove(Constants.TYPE_KEY));
 
         reminderService.createNewReminder(reminderType, reminderTime, sessionParameters, update.getMessage().getFrom());
 
