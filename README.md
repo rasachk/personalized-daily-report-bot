@@ -8,11 +8,11 @@ Users can subscribe to different services and receive automated daily updates at
 
 Currently implemented services:
 - Weather Forecast
+- Currency rates
+- Personal reminders
 
 Planned services:
-- Currency rates
 - Sports updates
-- Personal reminders
 - More daily report services
 
 ## How it works
